@@ -1,3 +1,5 @@
+setopt PROMPT_SUBST
+
 # Load dotfiles:
 for file in ~/.{zprompt,aliases,private}; do
     # check if file is readable and a normal file before loading
