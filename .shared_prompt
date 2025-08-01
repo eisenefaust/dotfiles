@@ -37,6 +37,15 @@ prompt_venv() {
     fi
 }
 
+# conda config --set changeps1 False
+prompt_condaenv() {
+    if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        # Use the Conda environment name as the prompt
+        condaenv_name=${CONDA_DEFAULT_ENV}
+        printf "\n%b(%s)\n" "${steel_blue}" "${condaenv_name}"
+    fi
+}
+
 # Using tput for colors and formatting.
 tput sgr0
 bold=$(tput bold)

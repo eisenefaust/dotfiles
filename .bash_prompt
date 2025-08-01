@@ -1,7 +1,8 @@
 
 source "${HOME}/.shared_prompt"
 
-PS1="\$(prompt_venv)" # virtual environment
+PS1="\$(prompt_condaenv)" # conda/mamba environment
+PS1+="\$(prompt_venv)" # virtual environment
 PS1+="\[${bold}\]\n" # newline
 PS1+="\[${userStyle}\]\u" # username
 PS1+="\[${white}\]@"

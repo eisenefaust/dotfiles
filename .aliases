@@ -9,16 +9,40 @@ fi
 # List all files colorized in long format, including dot files
 alias la="ls -lahF ${colorflag}"
 alias ll="ls -lF ${colorflag}"
+alias l.="ls -d .* ${colorflag}"
 
 # Always use color output for 'ls'
 alias ls="command ls ${colorflag}"
 
 # Always enable colored `grep` output
-# Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
+# z grep families
+alias zgrep='zgrep --color=auto'
+alias zegrep='zegrep --color=auto'
+alias zfgrep='zfgrep --color=auto'
+
+# xz grep families
+alias xzgrep='xzgrep --color=auto'
+alias xzfgrep='xzfgrep --color=auto'
+alias xzegrep='xzegrep --color=auto'
+
 # Find Files and Directories
 alias fd='find . -type d -iname'
 alias ff='find . -type f -iname'
+
+# add host specific aliases
+SASQUATCH_HOSTDOMAINS=("cm.cluster")
+HOSTNAME_DOMAIN=$(hostname -d)
+if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
+    alias sa='sacct --format "JobID,User,start,end,State,ExitCode,JobName%40,Comment,account%20,partition%20,Elapsed,TotalCPU,CPUTime%12,CPUTimeRaw,ReqTRES%177,TRESUsageInTot%205"'
+    alias ss='sshare -o "Account%30,Partition%30"'
+    alias sq='squeue -O Partition:.9,JobID:.8,UserName:.8,State:.10,TimeUsed:.15,TimeLeft:.15,AllocNodes:.12,MaxCPUs:.10,MinMemory:.12,Comment:.8'
+    alias gr='cd /data/hps/assoc/private/rsc/user/gmorto'
+    alias gs='cd /data/hps/assoc/private/stuart/user/gmorto'
+    alias gh='cd /data/hps/assoc/private/hpcc/user/gmorto'
+    alias bp='cd /data/hps/assoc/public/bioinformatics/container/posit/'
+    alias pc='cd /data/hps/assoc/private/posit_workbench/container'
+fi
