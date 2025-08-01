@@ -1,5 +1,10 @@
 # Define the prompt_git function for git repository status
 prompt_git() {
+    # if GIT_DISABLE_PROMPT exists and is set to 1, disable the git prompt
+    if [[ -n "${GIT_DISABLE_PROMPT+set}" && "${GIT_DISABLE_PROMPT}" -eq 1 ]]; then
+        return
+    fi
+
     local git_status=''
     local branchName=''
 
@@ -8,10 +13,10 @@ prompt_git() {
         # Get the status summary.
         local gitSummary=$(git status --porcelain)
 
-        # Check for uncommitted changes in the index, unstaged changes, untracked files, and stashed files.
-        [[ -n $(echo "$gitSummary" | grep '^M') ]] && git_status+='+'
-        [[ -n $(echo "$gitSummary" | grep '^ M') ]] && git_status+='!'
-        [[ -n $(echo "$gitSummary" | grep '^\?\?') ]] && git_status+='?'
+        # Check for changes in the index: uncommitted (+), unstaged (!), untracked (?), and stashed ($)
+        [[ -n $(echo "$gitSummary" | grep -o '^M') ]] && git_status+='+'
+        [[ -n $(echo "$gitSummary" | grep -o '^ M') ]] && git_status+='!'
+        [[ -n $(echo "$gitSummary" | grep -o '^\?\?') ]] && git_status+='?'
         [[ $(
             git rev-parse --verify refs/stash &>/dev/null
             echo "${?}"
@@ -37,6 +42,7 @@ prompt_venv() {
     fi
 }
 
+# run this to disable the default conda prompt management
 # conda config --set changeps1 False
 prompt_condaenv() {
     if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
