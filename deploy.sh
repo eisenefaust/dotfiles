@@ -35,8 +35,9 @@ deploy_dotfiles() {
 
     echo "To deploy dotfiles log in as ${user} to ${HOST}, clone this repo into \$HOME and run:"
     echo "cd dotfiles"
-    echo "cp .aliases .bash_prompt .shared_prompt ../"
+    echo "cp .aliases .bash_prompt .zprompt .shared_prompt ../"
     echo "Then copy the appropriate .bashrc or .zshrc chunk into that host's userfile."
+    echo "If the .ssh/config is desired, copy to \$HOME/.ssh/config and make any changes."
 }
 
 deploy_dotfiles "${USER}" "${PASS}"
