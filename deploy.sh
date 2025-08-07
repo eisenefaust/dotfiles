@@ -42,7 +42,7 @@ deploy() {
 
     for host in ${HOST_LIST[@]}; do
         # echo "host=${host}"
-        # echo sshpass -f $passfile scp -r * $user@$host:$DEPLOY_DIR || { echo "ERROR: couldn't copy files to $host:$DEPLOY_DIR"; exit 1; }
+        # echo sshpass -f $passfile rsync -czPr * $user@$host:$DEPLOY_DIR || { echo "ERROR: couldn't copy files to $host:$DEPLOY_DIR"; exit 1; }
         # echo "infocmp -x xterm-ghostty | sshpass -f ${passfile} ssh ${user}@${host} -- tic -x -"
         # echo "sshpass -f ${passfile} ssh ${user}@${host}"
         echo "ssh-keygen -C ${key_comment}@${host} -f ~/.ssh/${user_prefix}${host}_ed25519 -t ed25519"
@@ -52,7 +52,8 @@ deploy() {
 
     echo "To deploy dotfiles log in as ${user} to ${host}, clone this repo into \$HOME and run:"
     echo "cd dotfiles"
-    echo "cp .aliases .bash_prompt .zprompt .shared_prompt ../"
+    echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ../   or"
+    echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ${user}@${host}:~/"
     echo "Then copy the appropriate .bashrc or .zshrc chunk into that host's userfile."
     echo "If the .ssh/config is desired, copy to \$HOME/.ssh/config and make any changes."
 }
