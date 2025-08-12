@@ -17,7 +17,7 @@ HOST_LIST=(
     "pplvsq01.childrens.sea.kids"
     "pplvdb01.childrens.sea.kids"
     "rplasc01.childrens.sea.kids"
-    # "rplitl01.childrens.sea.kids"
+    "rplitl01.childrens.sea.kids"
     #".childrens.sea.kids"
 )
 
@@ -29,8 +29,8 @@ HOST_SHORT_LIST=(
     "pplvsq01"
     "pplvdb01"
     "rplasc01"
-    # # ["rplitl01.childrens.sea.kids"]="rplitl01"
-    # #".childrens.sea.kids"
+    "rplitl01"
+    #".childrens.sea.kids"
 )
 
 host_template() {
@@ -87,12 +87,15 @@ fingerprint() {
         fi
         local id_file="~/.ssh/${user_prefix}${host}_ed25519"
 
-        # -R removes all keys from host
+        # -R removes all keys of the host from the local machine before generating a new key
         echo "ssh-keygen -R ${host} -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+        # gets hash of host with type specified and appends to known_hosts (gets fingerprint hash)
         echo "ssh-keyscan -Ht ed25519 ${host} >> ~/.ssh/known_hosts"
+        # uses sshpass to copy over id_file to host
         echo "sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}"
+        # copies custom dotfiles and verifies deployment of id file for passwordless host login
         echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ${user}@${host}:~/"
-        # echo "echo \"IdentityFile ${id_file}\""
+        # build up ~/.ssh/config for the user per host
         host_template ${host} ${host_short} ${user} ${id_file} >> config
     done
 }
