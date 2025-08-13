@@ -29,6 +29,10 @@ brew cleanup
 
 # Define an array of packages to install using Homebrew.
 packages=(
+    "python"
+    "uv"
+    "bash"
+    "zsh"
     "git"
     "tree"
     "sshpass"
