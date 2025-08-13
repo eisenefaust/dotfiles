@@ -1,0 +1,32 @@
+{
+    "editor.renderWhitespace": "all",
+    "chat.mcp.discovery.enabled": true,
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "nextflow.telemetry.enabled": false,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "diffEditor.experimental.showMoves": true,
+    "diffEditor.renderSideBySide": false,
+    "diffEditor.ignoreTrimWhitespace": true,
+    "editor.multiCursorModifier": "ctrlCmd",
+
+    // Python settings
+    "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // Notebook settings
+  "notebook.defaultFormatter": "charliermarsh.ruff",
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.organizeImports": "explicit"
+  },
+  "notebook.insertFinalNewline": true,
+  "notebook.output.scrolling": true,
+  "notebook.lineNumbers": "on",
+  "notebook.scrolling.revealNextCellOnExecute": "none"
+}
