@@ -1,0 +1,12 @@
+# hosts list with short name for ~/.ssh/config
+# single space between host and short name
+# needs to end with a new line or last host/short pair will be skipped
+login-1.hpc.childrens.sea.kids sasquatch-1
+login-2.hpc.childrens.sea.kids sasquatch
+rplweb01.childrens.sea.kids gonzo
+rdldoc01.childrens.sea.kids bunsen
+pplvsq01.childrens.sea.kids pplvsq01
+pplvdb01.childrens.sea.kids pplvdb01
+rplasc01.childrens.sea.kids rplasc01
+rplitl01.childrens.sea.kids rplitl01
+#.childrens.sea.kids

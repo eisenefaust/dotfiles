@@ -9,29 +9,23 @@ ELEVATED_USER_PREFIX=("de-" "dd-")
 
 PRIMARY_USER=${USER}
 
-HOST_LIST=(
-    "login-1.hpc.childrens.sea.kids"
-    "login-2.hpc.childrens.sea.kids"
-    "rplweb01.childrens.sea.kids"
-    "rdldoc01.childrens.sea.kids"
-    "pplvsq01.childrens.sea.kids"
-    "pplvdb01.childrens.sea.kids"
-    "rplasc01.childrens.sea.kids"
-    "rplitl01.childrens.sea.kids"
-    #".childrens.sea.kids"
-)
+HOST_LIST=()
 
-HOST_SHORT_LIST=(
-    "sasquatch-1"
-    "sasquatch"
-    "gonzo"
-    "bunsen"
-    "pplvsq01"
-    "pplvdb01"
-    "rplasc01"
-    "rplitl01"
-    #".childrens.sea.kids"
-)
+HOST_SHORT_LIST=()
+
+read_hosts() {
+    while IFS=' '
+    read -r host short; do 
+        # if line starts with a "#" to mark a comment
+        if [[ "${host}" == "#"* ]]; then
+            continue
+        fi
+        HOST_LIST+=("${host}")
+        HOST_SHORT_LIST+=("${short}")
+    done < "hosts.txt"
+    printf '%s\n' "${HOST_LIST[@]}"
+    printf '%s\n' "${HOST_SHORT_LIST[@]}"
+}
 
 host_template() {
     local host=$1
@@ -94,7 +88,7 @@ fingerprint() {
         # uses sshpass to copy over id_file to host
         echo "sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}"
         # copies custom dotfiles and verifies deployment of id file for passwordless host login
-        echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ${user}@${host}:~/"
+        echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt .tmux.conf ${user}@${host}:~/"
         # build up ~/.ssh/config for the user per host
         host_template ${host} ${host_short} ${user} ${id_file} >> config
     done
@@ -142,6 +136,7 @@ deploy() {
     echo "Then copy the appropriate .bashrc or .zshrc chunk into that host's userfile."
     echo "If the .ssh/config is desired, copy to \$HOME/.ssh/config and make any changes."
 }
+read_hosts
 fingerprint "${USER}" "${PASS}"
 fingerprint "${USER}" "${PASS}"
 fingerprint "de-${USER}" "${PASS2}" "skip_hpc"
