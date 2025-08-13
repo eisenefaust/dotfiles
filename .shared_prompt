@@ -43,7 +43,7 @@ prompt_venv() {
 }
 
 # run this to disable the default conda prompt management
-# conda config --set changeps1 False
+# echo "conda config --set changeps1 False"
 prompt_condaenv() {
     if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
         # Use the Conda environment name as the prompt
@@ -73,6 +73,8 @@ elif [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${USER:0:3} " ]]; then
 else
     userStyle="${yellow}"
 fi
+unset ELEVATED_USER_PREFIX
+
 
 if [[ "${SSH_TTY}" ]]; then
     hostStyle="${bold}${red}"

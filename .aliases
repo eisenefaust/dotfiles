@@ -46,3 +46,5 @@ if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias bp='cd /data/hps/assoc/public/bioinformatics/container/posit/'
     alias pc='cd /data/hps/assoc/private/posit_workbench/container'
 fi
+unset SASQUATCH_HOSTDOMAINS
+unset HOSTNAME_DOMAIN
