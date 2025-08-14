@@ -103,6 +103,7 @@ fi
 
 # Define an array of applications to install using Homebrew Cask.
 apps=(
+    "firefox"
     "brave-browser"
     "visual-studio-code"
     "rectangle"
