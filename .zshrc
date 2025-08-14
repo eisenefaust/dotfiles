@@ -6,3 +6,8 @@ for file in ~/.{zprompt,aliases}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
+
+# add autocomplete for pixi commands
+autoload -Uz compinit
+compinit
+eval "$(pixi completion --shell zsh)"
