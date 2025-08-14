@@ -26,6 +26,7 @@ extensions=(
 installed_extensions=$(code --list-extensions)
 
 # no longer supported since can't trust all extension publishers in cli
+# https://github.com/microsoft/vscode/issues/240283
 for extension in "${extensions[@]}"; do
     if echo "$installed_extensions" | grep -qi "^$extension$"; then
         echo "$extension is already installed. Skipping..."
