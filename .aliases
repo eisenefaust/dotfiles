@@ -50,5 +50,6 @@ elif [[ " ${LOCAL_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias foxyproxy='ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
 fi
 unset SASQUATCH_HOSTDOMAINS
+unset LOCAL_HOSTDOMAINS
 unset HOSTNAME_DOMAIN
 
