@@ -35,6 +35,7 @@ alias ff='find . -type f -iname'
 
 # add host specific aliases
 SASQUATCH_HOSTDOMAINS=("cm.cluster")
+LOCAL_HOSTDOMAINS=("MLSLE16948")
 HOSTNAME_DOMAIN=$(hostname -d)
 if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias sa='sacct --format "JobID,User,start,end,State,ExitCode,JobName%40,Comment,account%20,partition%20,Elapsed,TotalCPU,CPUTime%12,CPUTimeRaw,ReqTRES%177,TRESUsageInTot%205"'
@@ -45,6 +46,9 @@ if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias gh='cd /data/hps/assoc/private/hpcc/user/gmorto'
     alias bp='cd /data/hps/assoc/public/bioinformatics/container/posit/'
     alias pc='cd /data/hps/assoc/private/posit_workbench/container'
+elif [[ " ${LOCAL_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
+    alias foxyproxy='ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
 fi
 unset SASQUATCH_HOSTDOMAINS
 unset HOSTNAME_DOMAIN
+
