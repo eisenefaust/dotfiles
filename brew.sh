@@ -37,6 +37,8 @@ packages=(
     "tree"
     "sshpass"
     "tmux"
+    "pixi"
+    "bat"
 )
 
 # Loop over the array to install each application.
