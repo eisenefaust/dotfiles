@@ -47,7 +47,7 @@ if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias bp='cd /data/hps/assoc/public/bioinformatics/container/posit/'
     alias pc='cd /data/hps/assoc/private/posit_workbench/container'
 elif [[ " ${LOCAL_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
-    alias foxyproxy='ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
+    alias foxyproxy_tunnel='ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
 fi
 unset SASQUATCH_HOSTDOMAINS
 unset LOCAL_HOSTDOMAINS
