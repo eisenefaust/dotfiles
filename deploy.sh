@@ -68,18 +68,18 @@ generate_clean_keys_command() {
 
     # primary output if needed to send this to remote host as single line remote ssh command
     # https://superuser.com/a/775195
-    if test -f $HOME/.ssh/authorized_keys; then
-        temp_file=$(mktemp);
-        cp $HOME/.ssh/authorized_keys $HOME/.ssh/authorized_keys.bak;
-        for arg in ${search_strings}; do
-            echo ${arg};
-            if grep -v "${arg}" $HOME/.ssh/authorized_keys > $temp_file; then
-                cat $temp_file > $HOME/.ssh/authorized_keys && rm $temp_file;
-            else
-                rm $HOME/.ssh/authorized_keys && rm $temp_file;
-            fi;
-        done;
-    fi;
+    # if test -f $HOME/.ssh/authorized_keys; then
+    #     temp_file=$(mktemp);
+    #     cp $HOME/.ssh/authorized_keys $HOME/.ssh/authorized_keys.bak;
+    #     for arg in ${search_strings}; do
+    #         echo ${arg};
+    #         if grep -v "${arg}" $HOME/.ssh/authorized_keys > $temp_file; then
+    #             cat $temp_file > $HOME/.ssh/authorized_keys && rm $temp_file;
+    #         else
+    #             rm $HOME/.ssh/authorized_keys && rm $temp_file;
+    #         fi;
+    #     done;
+    # fi;
 
     # search_strings=("head-1" "pplhpc1ln1.childrens.sea.kids")
     # serialze the main function into a string to send to remote host via ssh or eval locally if desired
