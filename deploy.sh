@@ -124,9 +124,25 @@ clean_keys() {
 fingerprint() {
     local user=$1
     local passfile=$2
-    local skip_hpc=$3
+    shift 2 # remove parsed parameters from $@
+    local parameter_array=("$@")
+    echo "parameter_array=${parameter_array[*]}"
+    local reset_keys=""
+    local skip_hpc=""
+
+    for arg in ${parameter_array[@]}; do
+        echo "arg=${arg}"
+        if [[ " ${arg} " =~ " reset_keys " ]]; then
+            reset_keys="reset_keys"
+        elif [[ " ${arg} " =~ " skip_hpc " ]]; then
+            skip_hpc="skip_hpc"
+        fi
+    done
+
     echo "user=$user"
     echo "passfile=$passfile"
+    echo "reset_keys=$reset_keys"
+    echo "skip_hpc=$skip_hpc"
 
     user_prefix=""
     key_comment=""
@@ -153,20 +169,24 @@ fingerprint() {
         fi
         local id_file="~/.ssh/${user_prefix}${host}_ed25519"
 
-        # since cleaning up keys, remove old keys from remote hosts
-        generate_clean_keys_command $host $host_short
-        echo "export clean_keys_command=${clean_keys_command}"
-        # uses sshpass to make sure old key is removed from authorized_keys list on remote host
-        sshpass -f ${passfile} ssh ${user}@${host} ${clean_keys_command}
-
-        # -R removes all keys of the host from the local machine before generating a new key
-        echo "ssh-keygen -R ${host} -C ${key_comment}@${host} -f ${id_file} -t ed25519"
-        # gets hash of host with type specified and appends to known_hosts (gets fingerprint hash)
-        echo "ssh-keyscan -Ht ed25519 ${host} >> ~/.ssh/known_hosts"
+        if [[ "${reset_keys}" == "reset_keys" ]]; then
+            # since cleaning up keys, remove old keys from remote hosts
+            generate_clean_keys_command $host $host_short
+            # echo "export clean_keys_command=${clean_keys_command}"
+            # uses sshpass to make sure old key is removed from authorized_keys list on remote host
+            echo "sshpass -f ${passfile} ssh ${user}@${host} ${clean_keys_command}"
+            # -R removes all keys of the host from the local machine before generating a new key
+            echo "ssh-keygen -R ${host} -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+            # gets hash of host with type specified and appends to known_hosts (gets fingerprint hash)
+            echo "ssh-keyscan -Ht ed25519 ${host} >> ~/.ssh/known_hosts"
+        elif [ ! -f "${id_file}" ]; then
+            # not reseting key for user@host and the id_file doesn't exist, so generate it for the first time
+            echo "ssh-keygen -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+        fi
         # uses sshpass to copy over id_file to host
         echo "sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}"
         # copies custom dotfiles and verifies deployment of id file for passwordless host login
-        echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt .tmux.conf ${user}@${host}:~/"
+        echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt tmux/.config/.tmux.conf ${user}@${host}:~/"
         # build up ~/.ssh/config for the user per host
         host_template ${host} ${host_short} ${user} ${id_file} >> config
     done
@@ -222,7 +242,7 @@ fingerprint "${USER}" "${PASS}"
 fingerprint "de-${USER}" "${PASS2}" "skip_hpc"
 fingerprint "svc_rsc_hpc_auto" "${PASS3}"
 fingerprint "svc_rsc_hpc_log" "${PASS4}"
-# cat ./config
+cat ./config
 
 # echo "look at $(pwd)/config and deploy if valid"
 # deploy "${USER}" "${PASS}"
