@@ -49,6 +49,78 @@ host_template() {
     echo ""
 }
 
+generate_clean_keys_command() {
+    # generates a string that may be eval'd to clean up old the authorized keys from $HOME/.ssh/authorized_keys
+    # by removing the key containing some unique string or just deletes the authorized_keys file when no other key remains
+    # makes a backup to $HOME/.ssh/authorized_keys.bak, if it exists, before parsing
+    # parameters: array of substrings to match to remove the line
+    #   intended to pass $USER or $(hostname) or $(hostname -A) to pass the identifier from the comment in the pub token
+    # if no passed search strings, return immediately
+    # return export clean_keys_command
+    if [[ ! "$@" ]]; then
+        echo "No search strings"
+        return
+    fi
+    local search_strings=("$@")
+    # echo "search_strings=${search_strings}"
+    
+    export clean_keys_command="" #this is the return value
+
+    # primary output if needed to send this to remote host as single line remote ssh command
+    # https://superuser.com/a/775195
+    if test -f $HOME/.ssh/authorized_keys; then
+        temp_file=$(mktemp);
+        cp $HOME/.ssh/authorized_keys $HOME/.ssh/authorized_keys.bak;
+        for arg in ${search_strings}; do
+            echo ${arg};
+            if grep -v "${arg}" $HOME/.ssh/authorized_keys > $temp_file; then
+                cat $temp_file > $HOME/.ssh/authorized_keys && rm $temp_file;
+            else
+                rm $HOME/.ssh/authorized_keys && rm $temp_file;
+            fi;
+        done;
+    fi;
+
+    # search_strings=("head-1" "pplhpc1ln1.childrens.sea.kids")
+    # serialze the main function into a string to send to remote host via ssh or eval locally if desired
+    # https://superuser.com/a/775195
+    clean_keys_command=$(echo "\
+    if test -f \$HOME/.ssh/authorized_keys; then
+        temp_file=\$(mktemp);
+        cp \$HOME/.ssh/authorized_keys \$HOME/.ssh/authorized_keys.bak;
+        for arg in ${search_strings}; do
+            echo \${arg};
+            if grep -v \"\${arg}\" \$HOME/.ssh/authorized_keys > \$temp_file; then
+                cat \$temp_file > \$HOME/.ssh/authorized_keys && rm \$temp_file;
+            else
+                rm \$HOME/.ssh/authorized_keys && rm \$temp_file;
+            fi;
+        done;
+    fi;")
+    # remove new line and carriage returns
+    # my_trim="${my_string//[$'\n\r']}"
+    return
+}
+
+clean_keys() {
+    # specifically overwriting global HOST_LIST locally
+    # so I can comment out from specific hosts to all known easily
+    local HOST_LIST=("login-2.hpc.childrens.sea.kids") # hosts to clean up
+    search_strings=("head-1" "pplhpc1ln1.childrens.sea.kids") # retired machines to remove
+
+    for idx in ${!HOST_LIST[@]}; do
+        # echo "idx=${idx}"
+        local host=${HOST_LIST[${idx}]}
+        echo "host=${host}"
+
+        generate_clean_keys_command "${search_strings[*]}"
+        echo "export clean_keys_command=${clean_keys_command}"
+
+        # uses sshpass to copy over id_file to host
+        sshpass -f ${PASS} ssh ${USER}@${host} ${clean_keys_command}
+    done
+}
+
 fingerprint() {
     local user=$1
     local passfile=$2
@@ -136,6 +208,8 @@ deploy() {
     echo "Then copy the appropriate .bashrc or .zshrc chunk into that host's userfile."
     echo "If the .ssh/config is desired, copy to \$HOME/.ssh/config and make any changes."
 }
+# clean_keys
+
 read_hosts
 fingerprint "${USER}" "${PASS}"
 fingerprint "${USER}" "${PASS}"
