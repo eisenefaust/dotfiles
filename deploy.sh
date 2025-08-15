@@ -153,6 +153,12 @@ fingerprint() {
         fi
         local id_file="~/.ssh/${user_prefix}${host}_ed25519"
 
+        # since cleaning up keys, remove old keys from remote hosts
+        generate_clean_keys_command $host $host_short
+        echo "export clean_keys_command=${clean_keys_command}"
+        # uses sshpass to make sure old key is removed from authorized_keys list on remote host
+        sshpass -f ${passfile} ssh ${user}@${host} ${clean_keys_command}
+
         # -R removes all keys of the host from the local machine before generating a new key
         echo "ssh-keygen -R ${host} -C ${key_comment}@${host} -f ${id_file} -t ed25519"
         # gets hash of host with type specified and appends to known_hosts (gets fingerprint hash)
@@ -216,7 +222,7 @@ fingerprint "${USER}" "${PASS}"
 fingerprint "de-${USER}" "${PASS2}" "skip_hpc"
 fingerprint "svc_rsc_hpc_auto" "${PASS3}"
 fingerprint "svc_rsc_hpc_log" "${PASS4}"
-cat ./config
+# cat ./config
 
 # echo "look at $(pwd)/config and deploy if valid"
 # deploy "${USER}" "${PASS}"
