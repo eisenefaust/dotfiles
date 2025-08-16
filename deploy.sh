@@ -49,22 +49,26 @@ host_template() {
     echo ""
 }
 
-generate_clean_keys_command() {
-    # generates a string that may be eval'd to clean up old the authorized keys from $HOME/.ssh/authorized_keys
-    # by removing the key containing some unique string or just deletes the authorized_keys file when no other key remains
-    # makes a backup to $HOME/.ssh/authorized_keys.bak, if it exists, before parsing
+generate_clean_command() {
+    # generates a string that may be eval'd to clean up old files such as:
+    #   authorized keys from $HOME/.ssh/authorized_keys
+    #   known_hosts from $HOME/.ssh/known_hosts
+    # by removing the line containing some unique string or just deletes the file line remains
+    # makes a backup to ${file_path}.bak, if it exists, before parsing
     # parameters: array of substrings to match to remove the line
     #   intended to pass $USER or $(hostname) or $(hostname -A) to pass the identifier from the comment in the pub token
     # if no passed search strings, return immediately
-    # return export clean_keys_command
+    # return export clean_command
+    local file_path=$1 # store first param as file to clean up
+    shift 1 # remove parsed parameters from $@
     if [[ ! "$@" ]]; then
         echo "No search strings"
         return
     fi
     local search_strings=("$@")
-    # echo "search_strings=${search_strings}"
+    echo "search_strings=${search_strings[*]}"
     
-    export clean_keys_command="" #this is the return value
+    export clean_command="" #this is the return value
 
     # primary output if needed to send this to remote host as single line remote ssh command
     # https://superuser.com/a/775195
@@ -84,21 +88,21 @@ generate_clean_keys_command() {
     # search_strings=("head-1" "pplhpc1ln1.childrens.sea.kids")
     # serialze the main function into a string to send to remote host via ssh or eval locally if desired
     # https://superuser.com/a/775195
-    clean_keys_command=$(echo "\
-    if test -f \$HOME/.ssh/authorized_keys; then
+    clean_command=$(echo "\
+    if test -f ${file_path}; then
         temp_file=\$(mktemp);
-        cp \$HOME/.ssh/authorized_keys \$HOME/.ssh/authorized_keys.bak;
-        for arg in ${search_strings}; do
+        cp ${file_path} ${file_path}.bak;
+        for arg in ${search_strings[@]}; do
             echo \${arg};
-            if grep -v \"\${arg}\" \$HOME/.ssh/authorized_keys > \$temp_file; then
-                cat \$temp_file > \$HOME/.ssh/authorized_keys && rm \$temp_file;
+            if grep -v \"\${arg}\" ${file_path} > \$temp_file; then
+                cat \$temp_file > ${file_path} && rm \$temp_file;
             else
-                rm \$HOME/.ssh/authorized_keys && rm \$temp_file;
+                rm ${file_path} && rm \$temp_file;
             fi;
         done;
     fi;")
     # remove new line and carriage returns
-    # my_trim="${my_string//[$'\n\r']}"
+    # my_trim="${clean_command//[$'\n\r']}"
     return
 }
 
@@ -113,15 +117,15 @@ clean_keys() {
         local host=${HOST_LIST[${idx}]}
         echo "host=${host}"
 
-        generate_clean_keys_command "${search_strings[*]}"
-        echo "export clean_keys_command=${clean_keys_command}"
+        generate_clean_command "${search_strings[*]}"
+        echo "export clean_command=${clean_command}"
 
         # uses sshpass to copy over id_file to host
-        sshpass -f ${PASS} ssh ${USER}@${host} ${clean_keys_command}
+        sshpass -f ${PASS} ssh ${USER}@${host} ${clean_command}
     done
 }
 
-fingerprint() {
+remote_hosts_setup() {
     local user=$1
     local passfile=$2
     shift 2 # remove parsed parameters from $@
@@ -170,79 +174,48 @@ fingerprint() {
         local id_file="~/.ssh/${user_prefix}${host}_ed25519"
 
         if [[ "${reset_keys}" == "reset_keys" ]]; then
-            # since cleaning up keys, remove old keys from remote hosts
-            generate_clean_keys_command $host $host_short
-            # echo "export clean_keys_command=${clean_keys_command}"
+            # since cleaning up keys, remove old keys of current machine from remote hosts
+            generate_clean_command "\$HOME/.ssh/authorized_keys" $(hostname)
+            # echo "export clean_command=${clean_command}"
             # uses sshpass to make sure old key is removed from authorized_keys list on remote host
-            echo "sshpass -f ${passfile} ssh ${user}@${host} ${clean_keys_command}"
-            # -R removes all keys of the host from the local machine before generating a new key
-            echo "ssh-keygen -R ${host} -C ${key_comment}@${host} -f ${id_file} -t ed25519"
-            # gets hash of host with type specified and appends to known_hosts (gets fingerprint hash)
-            echo "ssh-keyscan -Ht ed25519 ${host} >> ~/.ssh/known_hosts"
-        elif [ ! -f "${id_file}" ]; then
-            # not reseting key for user@host and the id_file doesn't exist, so generate it for the first time
-            echo "ssh-keygen -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+            echo "sshpass -f ${passfile} ssh -t ${user}@${host} ${clean_command}"
+        
+            if [ -f "${id_file}" ]; then
+                # -R removes all keys of the host from the local machine before generating a new key
+                echo "ssh-keygen -R ${host} -f ${id_file}"
+            fi
+
+            # generate a new key for user@host
+            echo "ssh-keygen -q -N \"\" -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+
+            # obfuscates hosts by converting them all to hashes
+            # echo "ssh-keygen -H ${HOME}/.ssh/known_hosts"
         fi
         # uses sshpass to copy over id_file to host
         echo "sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}"
         # copies custom dotfiles and verifies deployment of id file for passwordless host login
         echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt tmux/.config/.tmux.conf ${user}@${host}:~/"
         # build up ~/.ssh/config for the user per host
-        host_template ${host} ${host_short} ${user} ${id_file} >> config
+        host_template ${host} ${host_short} ${user} ${id_file} >> ./config
     done
-}
 
-deploy() {
-    local user=$1
-    local passfile=$2
-    local skip_hpc=$3
-    echo "user=$user"
-    echo "passfile=$passfile"
-
-    user_prefix=""
-    key_comment=""
-    if [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${user:0:3} " ]]; then
-        # use elevated user prefix as prefix for the ssh key
-        user_prefix="${user:0:3}"
-        key_comment="${user}@"
-    elif [[ "${user}" != ${PRIMARY_USER} ]]; then
-        # use entire svc account name as prefix for the ssh key
-        user_prefix="${user}-"
-        key_comment="${user}@"
+    echo "deploying ssh key config with shortnames"
+    ssh_config=${HOME}/.ssh/config
+    if [ -f ${ssh_config} ]; then
+        cp ${ssh_config} ${ssh_config}.bak
     fi
-    key_comment="${key_comment}${USER}@$(hostname)"
+    cp ./config ${ssh_config}
 
-    for host in ${HOST_LIST[@]}; do
-        echo "host=${host}"
-        echo "skip_hpc=${skip_hpc}"
-        if [[ "${skip_hpc}" == "skip_hpc" ]] && [[ "${host}" == *".hpc.childrens.sea.kids" ]]; then
-            continue
-        fi
-        # echo sshpass -f $passfile rsync -czPr * $user@$host:$DEPLOY_DIR || { echo "ERROR: couldn't copy files to $host:$DEPLOY_DIR"; exit 1; }
-        # echo "infocmp -x xterm-ghostty | sshpass -f ${passfile} ssh ${user}@${host} -- tic -x -"
-        # echo "sshpass -f ${passfile} ssh ${user}@${host}"
-
-        echo "ssh-keygen -C ${key_comment}@${host} -f ~/.ssh/${user_prefix}${host}_ed25519 -t ed25519"
-        echo "sshpass -f ${passfile} ssh-copy-id -i ~/.ssh/${user_prefix}${host}_ed25519 ${user}@${host}"
-        echo "echo \"IdentityFile ~/.ssh/${user_prefix}${host}_ed25519\""
-    done
-
-    echo "To deploy dotfiles log in as ${user} to ${host}, clone this repo into \$HOME and run:"
-    echo "cd dotfiles"
-    echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ../   or"
-    echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt ${user}@${host}:~/"
-    echo "Then copy the appropriate .bashrc or .zshrc chunk into that host's userfile."
-    echo "If the .ssh/config is desired, copy to \$HOME/.ssh/config and make any changes."
+    echo "To finish the deployment of the terminal preferences,"
+    echo "when next logged in to remote host, edit ~/.bashrc with source \".bashrc_add\" or similar with zshell"
 }
-# clean_keys
 
 read_hosts
-fingerprint "${USER}" "${PASS}"
-fingerprint "${USER}" "${PASS}"
-fingerprint "de-${USER}" "${PASS2}" "skip_hpc"
-fingerprint "svc_rsc_hpc_auto" "${PASS3}"
-fingerprint "svc_rsc_hpc_log" "${PASS4}"
-cat ./config
+remote_hosts_setup "${USER}" "${PASS}" "reset_keys"
+# remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc"
+# remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}"
+# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}"
+# cat ./config
 
 # echo "look at $(pwd)/config and deploy if valid"
 # deploy "${USER}" "${PASS}"
