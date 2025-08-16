@@ -33,6 +33,10 @@ alias xzegrep='xzegrep --color=auto'
 alias fd='find . -type d -iname'
 alias ff='find . -type f -iname'
 
+# Tmux 
+export TMUX_CONF=~/.config/tmux/tmux.conf
+alias tmux="tmux -f $TMUX_CONF"
+
 # add host specific aliases
 SASQUATCH_HOSTDOMAINS=("cm.cluster")
 LOCAL_HOSTDOMAINS=("MLSLE16948")
