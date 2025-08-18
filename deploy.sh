@@ -133,7 +133,8 @@ clean_keys() {
 remote_hosts_setup() {
     local user=$1
     local passfile=$2
-    shift 2 # remove parsed parameters from $@
+    temp_config_file=$3
+    shift 3 # remove parsed parameters from $@
     local parameter_array=("$@")
     echo "parameter_array=${parameter_array[*]}"
     local reset_keys=""
@@ -150,10 +151,9 @@ remote_hosts_setup() {
 
     echo "user=$user"
     echo "passfile=$passfile"
+    echo "temp_config_file=$temp_config_file"
     echo "reset_keys=$reset_keys"
     echo "skip_hpc=$skip_hpc"
-
-    temp_config_file=$(mktemp)
 
     user_prefix=""
     key_comment=""
@@ -229,22 +229,25 @@ remote_hosts_setup() {
         host_template ${host} ${host_short} ${user} ${id_file} >> $temp_config_file
     done
 
-    echo "deploying ssh key config with shortnames"
-    ssh_config=${HOME}/.ssh/config
-    if [ -f ${ssh_config} ]; then
-        cp ${ssh_config} ${ssh_config}.bak
-    fi
-    cat $temp_config_file > ${ssh_config} && rm $temp_config_file
-
     echo "To finish the deployment of the terminal preferences,"
     echo "when next logged in to remote host, edit ~/.bashrc with source \".bashrc_add\" or similar with zshell"
 }
 
 read_hosts
-remote_hosts_setup "${USER}" "${PASS}" "reset_keys"
-remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc" "reset_keys"
-remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" "reset_keys"
-# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" "reset_keys"
+temp_config_file=$(mktemp)
+
+remote_hosts_setup "${USER}" "${PASS}" $temp_config_file
+remote_hosts_setup "de-${USER}" "${PASS2}" $temp_config_file "skip_hpc"
+remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" $temp_config_file
+# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" $temp_config_file "reset_keys"
+
+echo "deploying ssh key config with shortnames"
+ssh_config=${HOME}/.ssh/config
+if [ -f ${ssh_config} ]; then
+    cp ${ssh_config} ${ssh_config}.bak
+fi
+cat $temp_config_file > ${ssh_config} && rm $temp_config_file
+
 # cat ${ssh_config}
 
 # echo "look at $(pwd)/config and deploy if valid"
