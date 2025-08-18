@@ -35,7 +35,7 @@ done
 ./vscode.sh
 
 #.zshrc contents
-# source ".zshrc_add"
+# source .zshrc_add
 # sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@helens.childrens.sea.kids/active ~/active
 # sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@baker.childrens.sea.kids/archive ~/archive
 echo "Installation Complete!"
