@@ -20,7 +20,7 @@ cd "${dotfiledir}" || exit
 # create symlinks (will overwrite old dotfiles)
 for file in "${files[@]}"; do
     if [ -f ${HOME}/.$file ] && [ ! -L ${HOME}/.$file ]; then
-        # move real file to backup dir
+        # move real file to backup dir if they exist
         mkdir -p ${HOME}/dotfiles.bkup
         mv ${HOME}/.$file ${HOME}/dotfiles.bkup/
     fi
@@ -34,4 +34,8 @@ done
 # Run VS Code Script
 ./vscode.sh
 
+#.zshrc contents
+# source ".zshrc_add"
+# sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@helens.childrens.sea.kids/active ~/active
+# sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@baker.childrens.sea.kids/archive ~/archive
 echo "Installation Complete!"
