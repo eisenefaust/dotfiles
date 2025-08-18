@@ -218,8 +218,11 @@ remote_hosts_setup() {
         sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}
         # verify ssh-key was registred properly
         ssh -i ${id_file} ${user}@${host} "echo verified"
-        # copies custom dotfiles
-        sshpass -f ${passfile} rsync -czPr .aliases .bash_prompt .zprompt .shared_prompt tmux/ ${user}@${host}:~/
+
+        # copies custom dotfiles for my accounts only (not shared service accounts)
+        if [[ ${user} == *"${USER}" ]]; then
+            sshpass -f ${passfile} rsync -czPr .aliases .bash_prompt .zprompt .shared_prompt tmux/ ${user}@${host}:~/
+        fi
         # build up ~/.ssh/config for the user per host
         host_template ${host} ${host_short} ${user} ${id_file} >> $temp_config_file
     done
@@ -237,8 +240,8 @@ remote_hosts_setup() {
 
 read_hosts
 remote_hosts_setup "${USER}" "${PASS}" "reset_keys"
-# remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc" "reset_keys"
-# remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" "reset_keys"
+remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc" "reset_keys"
+remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" "reset_keys"
 # remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" "reset_keys"
 # cat ${ssh_config}
 
