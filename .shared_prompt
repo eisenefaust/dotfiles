@@ -53,6 +53,8 @@ prompt_condaenv() {
 }
 
 # Using tput for colors and formatting.
+# https://askubuntu.com/a/592839
+# Note about -T and $TERM and $- == *i* for inertactive check in .*shrc_prompt
 tput sgr0
 bold=$(tput bold)
 reset=$(tput sgr0)
