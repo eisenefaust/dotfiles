@@ -16,6 +16,8 @@ HOST_LIST=()
 
 HOST_SHORT_LIST=()
 
+FILE_MANIFEST=( ".aliases" ".bash_prompt" ".bashrc_add" ".zprompt" ".zshrc_add" ".shared_prompt" ".bashrc_add" "tmux/" )
+
 read_hosts() {
     while IFS=' '
     read -r host short; do 
@@ -221,7 +223,7 @@ remote_hosts_setup() {
 
         # copies custom dotfiles for my accounts only (not shared service accounts)
         if [[ ${user} == *"${USER}" ]]; then
-            sshpass -f ${passfile} rsync -czPr .aliases .bash_prompt .zprompt .shared_prompt tmux/ ${user}@${host}:~/
+            sshpass -f ${passfile} rsync -czPr ${FILE_MANIFEST[*]} ${user}@${host}:~/
         fi
         # build up ~/.ssh/config for the user per host
         host_template ${host} ${host_short} ${user} ${id_file} >> $temp_config_file
