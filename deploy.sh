@@ -1,9 +1,12 @@
 #!/bin/bash
 
-PASS=~/.ssh/sch-passwd
-PASS2=~/.ssh/sch2-passwd
-PASS3=~/.ssh/rsc-auto-passwd
-PASS4=~/.ssh/rsc-log-passwd
+KNOWN_HOSTS="${HOME}/.ssh/known_hosts"
+
+
+PASS=${HOME}/.ssh/sch-passwd
+PASS2=${HOME}/.ssh/sch2-passwd
+PASS3=${HOME}/.ssh/rsc-auto-passwd
+PASS4=${HOME}/.ssh/rsc-log-passwd
 
 ELEVATED_USER_PREFIX=("de-" "dd-")
 
@@ -148,6 +151,8 @@ remote_hosts_setup() {
     echo "reset_keys=$reset_keys"
     echo "skip_hpc=$skip_hpc"
 
+    temp_config_file=$(mktemp)
+
     user_prefix=""
     key_comment=""
     if [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${user:0:3} " ]]; then
@@ -171,32 +176,52 @@ remote_hosts_setup() {
         if [[ "${skip_hpc}" == "skip_hpc" ]] && [[ "${host}" == *".hpc.childrens.sea.kids" ]]; then
             continue
         fi
-        local id_file="~/.ssh/${user_prefix}${host}_ed25519"
+        local id_file="${HOME}/.ssh/${user_prefix}${host}_ed25519"
 
         if [[ "${reset_keys}" == "reset_keys" ]]; then
             # since cleaning up keys, remove old keys of current machine from remote hosts
-            generate_clean_command "\$HOME/.ssh/authorized_keys" $(hostname)
+            # This prevents ssh-copy-id from reporting key already present since it was already removed if present.
+            echo "resetting keys for ${key_comment}@${host}"
+            generate_clean_command "\$HOME/.ssh/authorized_keys" ${key_comment}@${host}
             # echo "export clean_command=${clean_command}"
             # uses sshpass to make sure old key is removed from authorized_keys list on remote host
-            echo "sshpass -f ${passfile} ssh -t ${user}@${host} ${clean_command}"
-        
+            sshpass -f ${passfile} ssh -t ${user}@${host} ${clean_command}
+
+            # -R removes all keys of the host from the local machine before generating a new key
+            ssh-keygen -R ${host} -f ${id_file}
+
+            # back up old id_file just in case instead of deleting it
             if [ -f "${id_file}" ]; then
-                # -R removes all keys of the host from the local machine before generating a new key
-                echo "ssh-keygen -R ${host} -f ${id_file}"
+                # will silently overwrite existing backups if they exist
+                echo "backing up old id file pair"
+                mv ${id_file} ${id_file}.bak
+                mv ${id_file}.pub ${id_file}.pub.bak
             fi
-
+        fi
+        # If need to generate a new key
+        if [ ! -f "${id_file}" ]; then
             # generate a new key for user@host
-            echo "ssh-keygen -q -N \"\" -C ${key_comment}@${host} -f ${id_file} -t ed25519"
+            echo "generating new key"
+            ssh-keygen -q -N "" -C ${key_comment}@${host} -f ${id_file} -t ed25519
+        fi
 
-            # obfuscates hosts by converting them all to hashes
-            # echo "ssh-keygen -H ${HOME}/.ssh/known_hosts"
+        # Check if the host is already in known_hosts
+        ssh-keygen -F "${host}"
+        if [ $? -ne 0 ]; then
+            # if ssh-keygen returns non-zero exit code, host needs to be added.
+            # Retrieve the host's public key and append it
+            # -H obfuscates hosts by converting them all to hashes
+            echo "adding host to known_hosts ${host}"
+            ssh-keyscan -t ed25519 "${host}" >> "$KNOWN_HOSTS"
         fi
         # uses sshpass to copy over id_file to host
-        echo "sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}"
-        # copies custom dotfiles and verifies deployment of id file for passwordless host login
-        echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt tmux/.config/.tmux.conf ${user}@${host}:~/"
+        sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${host}
+        # verify ssh-key was registred properly
+        ssh -i ${id_file} ${user}@${host} "echo verified"
+        # copies custom dotfiles
+        sshpass -f ${passfile} rsync -czPr .aliases .bash_prompt .zprompt .shared_prompt tmux/ ${user}@${host}:~/
         # build up ~/.ssh/config for the user per host
-        host_template ${host} ${host_short} ${user} ${id_file} >> ./config
+        host_template ${host} ${host_short} ${user} ${id_file} >> $temp_config_file
     done
 
     echo "deploying ssh key config with shortnames"
@@ -204,7 +229,7 @@ remote_hosts_setup() {
     if [ -f ${ssh_config} ]; then
         cp ${ssh_config} ${ssh_config}.bak
     fi
-    cp ./config ${ssh_config}
+    cat $temp_config_file > ${ssh_config} && rm $temp_config_file
 
     echo "To finish the deployment of the terminal preferences,"
     echo "when next logged in to remote host, edit ~/.bashrc with source \".bashrc_add\" or similar with zshell"
@@ -212,10 +237,10 @@ remote_hosts_setup() {
 
 read_hosts
 remote_hosts_setup "${USER}" "${PASS}" "reset_keys"
-# remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc"
-# remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}"
-# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}"
-# cat ./config
+# remote_hosts_setup "de-${USER}" "${PASS2}" "skip_hpc" "reset_keys"
+# remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" "reset_keys"
+# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" "reset_keys"
+# cat ${ssh_config}
 
 # echo "look at $(pwd)/config and deploy if valid"
 # deploy "${USER}" "${PASS}"
