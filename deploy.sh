@@ -43,6 +43,8 @@ host_template() {
         host_short="svc-${host_short}"
     elif [[ ${user} == *"svc"*"log" ]]; then
         host_short="svcl-${host_short}"
+    elif [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${user:0:3} " ]]; then
+        host_short="de-${host_short}"
     fi
     echo "Host ${host_short}"
     echo "    HostName ${host}"
