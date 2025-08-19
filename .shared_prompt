@@ -43,7 +43,7 @@ prompt_venv() {
 }
 
 # run this to disable the default conda prompt management
-# echo "conda config --set changeps1 False"
+#   conda config --set changeps1 False
 prompt_condaenv() {
     if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
         # Use the Conda environment name as the prompt
@@ -51,6 +51,12 @@ prompt_condaenv() {
         printf "\n%b(%s)\n" "${steel_blue}" "${condaenv_name}"
     fi
 }
+
+# pixi uses same environment catch as conda but sets different config value:
+#  may show up twice if set with conda, will need to test on a system without conda, but can't be bothered right now
+#   pixi config set shell.change-ps1
+# PIXI_PROJECT_NAME
+# PIXI_PROMPT
 
 # Using tput for colors and formatting.
 # https://askubuntu.com/a/592839
