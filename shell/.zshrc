@@ -1,6 +1,6 @@
 
-source ".zshrc_add"
+source "${HOME}/.zshrc_add"
 
-sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@helens.childrens.sea.kids/active ~/active
-# sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@baker.childrens.sea.kids/archive ~/archive
+sshpass -f ${HOME}/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@helens.childrens.sea.kids/active ${HOME}/active
+# sshpass -f ${HOME}/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@baker.childrens.sea.kids/archive ${HOME}/archive
 

@@ -1,1 +1,1 @@
-source ".bashrc_add"
+source "${HOME}/.bashrc_add"

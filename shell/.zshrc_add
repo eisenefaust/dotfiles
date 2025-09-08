@@ -1,7 +1,7 @@
 setopt PROMPT_SUBST
 
 # Load dotfiles:
-for file in ~/.{zprompt,aliases}; do
+for file in ${HOME}/.{zprompt,aliases}; do
     # check if file is readable and a normal file before loading
     [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
@@ -11,8 +11,8 @@ unset file
 # from: # and: https://github.com/josean-dev/dev-environment-files/blob/main/.zshrc
 # annotations from: https://unix.stackexchange.com/a/273863
 # HISTFILE=$HOME/.zhistory
-SAVEHIST=1000 # max commands that are saved
-HISTSIZE=999 # max lines of history file
+SAVEHIST=5000 # max commands that are saved
+HISTSIZE=5000 # max lines of history file
 setopt share_history # Share history between all sessions.
 setopt hist_expire_dups_first # Expire duplicate entries first when trimming history.
 setopt hist_ignore_dups # Don't record an entry that was just recorded again.
