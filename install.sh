@@ -10,7 +10,7 @@
 dotfiledir="${HOME}/dotfiles"
 
 # list of files/folders to symlink in ${homedir}
-files=(.zshrc_add .zprompt .zshrc .bashrc_add .bash_prompt .bashrc .shared_prompt .aliases)
+files=( ".aliases" ".bash_prompt" ".bashrc_add" ".bashrc" ".zprompt" ".zshrc_add" ".zshrc" ".shared_prompt" ".bashrc_add" )
 # tmux/.config/tmux.conf)
 
 # change to the dotfiles directory
@@ -24,15 +24,15 @@ for file in "${files[@]}"; do
         mkdir -p ${HOME}/dotfiles.bkup
         mv ${HOME}/$file ${HOME}/dotfiles.bkup/
     fi
-    ln -sf "${dotfiledir}/${file}" "${HOME}/${file}"
+    # ln -sf "${dotfiledir}/shell/${file}" "${HOME}/${file}"
 done
 
 # Run the Homebrew Script
 # gets stow for below step
 ./brew.sh
 
-# echo "stow: ${files[@]}"
-# stow -t ~ "${files[@]}"
+echo "stow: shell"
+stow -t ~ "shell"
 
 config_dirs=(tmux)
 # use stow to create symlinks for .config dirs (will overwrite old .config dirs)
@@ -50,8 +50,4 @@ done
 # Run VS Code Script
 ./vscode.sh
 
-#.zshrc contents
-# source .zshrc_add
-# sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@helens.childrens.sea.kids/active ~/active
-# sshpass -f ~/.ssh/sch-passwd /sbin/mount_smbfs //${USER}@baker.childrens.sea.kids/archive ~/archive
 echo "Installation Complete!"

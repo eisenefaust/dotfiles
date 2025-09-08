@@ -16,7 +16,7 @@ HOST_LIST=()
 
 HOST_SHORT_LIST=()
 
-FILE_MANIFEST=( ".aliases" ".bash_prompt" ".bashrc_add" ".zprompt" ".zshrc_add" ".shared_prompt" ".bashrc_add" "tmux/" )
+FILE_MANIFEST=( "shell/.aliases" "shell/.bash_prompt" "shell/.bashrc_add" "shell/.zprompt" "shell/.zshrc_add" "shell/.shared_prompt" "shell/.bashrc_add" "tmux/" )
 
 read_hosts() {
     while IFS=' '
