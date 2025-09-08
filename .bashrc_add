@@ -5,4 +5,14 @@ for file in ~/.{bash_prompt,aliases}; do
 done
 unset file
 
+# history setup 
+# from: https://askubuntu.com/a/667787
+# and: https://unix.stackexchange.com/a/18443
+# export HISTFILE=$HOME/.bash_history
+HISTSIZE=1000 # max commands that are saved
+HISTFILESIZE=999 # max lines of history file
+HISTCONTROL=ignoreboth:erasedups
+shopt -s histappend
+PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+
 eval "$(pixi completion --shell bash)"

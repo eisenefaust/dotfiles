@@ -10,7 +10,7 @@
 dotfiledir="${HOME}/dotfiles"
 
 # list of files/folders to symlink in ${homedir}
-files=(zshrc_add zprompt bashrc_add bash_prompt shared_prompt aliases)
+files=(.zshrc_add .zprompt .zshrc .bashrc_add .bash_prompt .bashrc .shared_prompt .aliases)
 # tmux/.config/tmux.conf)
 
 # change to the dotfiles directory
@@ -19,17 +19,33 @@ cd "${dotfiledir}" || exit
 
 # create symlinks (will overwrite old dotfiles)
 for file in "${files[@]}"; do
-    if [ -f ${HOME}/.$file ] && [ ! -L ${HOME}/.$file ]; then
+    if [ -f ${HOME}/$file ] && [ ! -L ${HOME}/$file ]; then
         # move real file to backup dir if they exist
         mkdir -p ${HOME}/dotfiles.bkup
-        mv ${HOME}/.$file ${HOME}/dotfiles.bkup/
+        mv ${HOME}/$file ${HOME}/dotfiles.bkup/
     fi
-    ln -sf "${dotfiledir}/.${file}" "${HOME}/.${file}"
+    ln -sf "${dotfiledir}/${file}" "${HOME}/${file}"
 done
-# echo "rsync -czP .aliases .bash_prompt .zprompt .shared_prompt tmux/.config/.tmux.conf ${user}@${host}:~/"
 
 # Run the Homebrew Script
+# gets stow for below step
 ./brew.sh
+
+# echo "stow: ${files[@]}"
+# stow -t ~ "${files[@]}"
+
+config_dirs=(tmux)
+# use stow to create symlinks for .config dirs (will overwrite old .config dirs)
+for config_dir in "${config_dirs[@]}"; do
+    if [ -d ${HOME}/.config/$config_dir ] && [ ! -L ${HOME}/.config/$config_dir ]; then
+        # move real file to backup dir if they exist
+        mkdir -p ${HOME}/dotfiles.bkup/.config/$config_dir
+        cp -R ${HOME}/.config/$config_dir ${HOME}/dotfiles.bkup/.config/$config_dir
+        rm -r ${HOME}/.config/$config_dir
+    fi
+    echo "stow: $config_dir"
+    stow -t ~ $config_dir
+done
 
 # Run VS Code Script
 ./vscode.sh

@@ -7,6 +7,17 @@ for file in ~/.{zprompt,aliases}; do
 done
 unset file
 
+# history setup
+# from: # and: https://github.com/josean-dev/dev-environment-files/blob/main/.zshrc
+# annotations from: https://unix.stackexchange.com/a/273863
+# HISTFILE=$HOME/.zhistory
+SAVEHIST=1000 # max commands that are saved
+HISTSIZE=999 # max lines of history file
+setopt share_history # Share history between all sessions.
+setopt hist_expire_dups_first # Expire duplicate entries first when trimming history.
+setopt hist_ignore_dups # Don't record an entry that was just recorded again.
+setopt hist_verify # Don't execute immediately upon history expansion.
+
 # add autocomplete for pixi commands
 autoload -Uz compinit
 compinit

@@ -29,6 +29,7 @@ brew cleanup
 
 # Define an array of packages to install using Homebrew.
 packages=(
+    "stow"
     "python"
     "uv"
     "bash"
