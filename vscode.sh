@@ -62,9 +62,9 @@ echo "VS Code extensions have been installed."
 VSCODE_USER_SETTINGS_DIR="${HOME}/Library/Application Support/Code/User"
 
 if [ ! -f "${HOME}/dotfiles/settings/VSCode-Settings.json" ]; then
-    echo "VS Code user settings source file does not exist. Please ensure it's in "${HOME}/dotfiles/settings/VSCode-Settings.json."
+    echo "VS Code user settings source file does not exist. Please ensure it's in \"${HOME}/dotfiles/settings/VSCode-Settings.json.\""
 # Check if VS Code settings directory exists
-elif [ -d "$VSCODE_USER_SETTINGS_DIR" ] then
+elif [ -d "$VSCODE_USER_SETTINGS_DIR" ]; then
     # Copy your custom settings.json and keybindings.json to the VS Code settings directory
     ln -sf "${HOME}/dotfiles/settings/VSCode-Settings.json" "${VSCODE_USER_SETTINGS_DIR}/settings.json"
     # ln -sf "${HOME}/dotfiles/settings/VSCode-Keybindings.json" "${VSCODE_USER_SETTINGS_DIR}/keybindings.json"
