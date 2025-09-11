@@ -16,7 +16,7 @@ HOST_LIST=()
 
 HOST_SHORT_LIST=()
 
-FILE_MANIFEST=( ".aliases" ".bash_prompt" ".bashrc_add" ".zprompt" ".zshrc_add" ".shared_prompt" ".bashrc_add" "tmux/" )
+FILE_MANIFEST=( "shell/.aliases" "shell/.bash_prompt" "shell/.bashrc_add" "shell/.zprompt" "shell/.zshrc_add" "shell/.shared_prompt" "shell/.bashrc_add" "tmux/" )
 
 read_hosts() {
     while IFS=' '
@@ -241,7 +241,7 @@ temp_config_file=$(mktemp)
 remote_hosts_setup "${USER}" "${PASS}" $temp_config_file
 remote_hosts_setup "de-${USER}" "${PASS2}" $temp_config_file "skip_hpc"
 remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" $temp_config_file
-# remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" $temp_config_file "reset_keys"
+remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" $temp_config_file
 
 echo "deploying ssh key config with shortnames"
 ssh_config=${HOME}/.ssh/config

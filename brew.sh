@@ -29,6 +29,7 @@ brew cleanup
 
 # Define an array of packages to install using Homebrew.
 packages=(
+    "stow"
     "python"
     "uv"
     "bash"
@@ -107,6 +108,7 @@ apps=(
     "brave-browser"
     "visual-studio-code"
     "rectangle"
+    "miniforge"
 )
 
 # Loop over the array to install each application.
@@ -118,6 +120,8 @@ for app in "${apps[@]}"; do
         brew install --cask "$app"
     fi
 done
+
+conda init "$(basename "${SHELL}")"
 
 # Update and clean up again for safe measure
 brew update
