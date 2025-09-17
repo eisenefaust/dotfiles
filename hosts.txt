@@ -5,6 +5,7 @@ login-1.hpc.childrens.sea.kids sasquatch-1
 login-2.hpc.childrens.sea.kids sasquatch
 rplweb01.childrens.sea.kids gonzo
 rdldoc01.childrens.sea.kids bunsen
+rplbam01.childrens.sea.kids rplbam01
 pplvsq01.childrens.sea.kids pplvsq01
 pplvdb01.childrens.sea.kids pplvdb01
 rplasc01.childrens.sea.kids rplasc01

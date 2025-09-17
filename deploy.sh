@@ -19,6 +19,7 @@ HOST_SHORT_LIST=()
 FILE_MANIFEST=( "shell/.aliases" "shell/.bash_prompt" "shell/.bashrc_add" "shell/.zprompt" "shell/.zshrc_add" "shell/.shared_prompt" "shell/.bashrc_add" "tmux/" )
 
 read_hosts() {
+    local HOST_FILE="hosts.txt"
     while IFS=' '
     read -r host short; do 
         # if line starts with a "#" to mark a comment
@@ -27,7 +28,7 @@ read_hosts() {
         fi
         HOST_LIST+=("${host}")
         HOST_SHORT_LIST+=("${short}")
-    done < "hosts.txt"
+    done < $HOST_FILE
     printf '%s\n' "${HOST_LIST[@]}"
     printf '%s\n' "${HOST_SHORT_LIST[@]}"
 }

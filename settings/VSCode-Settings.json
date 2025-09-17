@@ -1,6 +1,11 @@
 {
     "editor.renderWhitespace": "all",
-    "chat.mcp.discovery.enabled": true,
+    "chat.mcp.discovery.enabled": {
+      "claude-desktop": true,
+      "windsurf": true,
+      "cursor-global": true,
+      "cursor-workspace": true
+    },
     "workbench.secondarySideBar.defaultVisibility": "hidden",
     "nextflow.telemetry.enabled": false,
     "git.autofetch": true,
@@ -28,5 +33,6 @@
   "notebook.insertFinalNewline": true,
   "notebook.output.scrolling": true,
   "notebook.lineNumbers": "on",
-  "notebook.scrolling.revealNextCellOnExecute": "none"
+  "notebook.scrolling.revealNextCellOnExecute": "none",
+  "geminicodeassist.project": "tools-scientific-computing"
 }
