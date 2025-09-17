@@ -33,5 +33,6 @@
   "notebook.insertFinalNewline": true,
   "notebook.output.scrolling": true,
   "notebook.lineNumbers": "on",
-  "notebook.scrolling.revealNextCellOnExecute": "none"
+  "notebook.scrolling.revealNextCellOnExecute": "none",
+  "geminicodeassist.project": "tools-scientific-computing"
 }

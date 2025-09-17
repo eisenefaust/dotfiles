@@ -20,6 +20,7 @@ extensions=(
     the0807.uv-toolkit
     jjjermiah.pixi-vscode
     nf-core.nf-core-extensionpack
+    google.geminicodeassist
 )
 
 # Get a list of all currently installed extensions.
@@ -52,7 +53,8 @@ done
 #         "tomoki1207.pdf",
 #         "the0807.uv-toolkit",
 #         "jjjermiah.pixi-vscode",
-#         "nf-core.nf-core-extensionpack"
+#         "nf-core.nf-core-extensionpack",
+#         "google.geminicodeassist"
 #     ]
 # }
 
