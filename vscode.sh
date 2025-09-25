@@ -26,6 +26,18 @@ extensions=(
 # Get a list of all currently installed extensions.
 installed_extensions=$(code --list-extensions)
 
+# refer to cert bundle repo for installing extensions
+REPO=ssh://git@ea-bitbucket-prod.childrens.sea.kids:7999/ec/bundles.git
+REPO_DIR=/Users/$USER/bundles
+if [ ! -d $REPO_DIR ]; then
+    git clone $REPO $REPO_DIR
+else
+    cd $REPO_DIR
+    git pull
+    cd -
+fi
+export NODE_EXTRA_CA_CERTS=/Users/$USER/bundles/SCHCABundleAll.crt
+
 # no longer supported since can't trust all extension publishers in cli
 # https://github.com/microsoft/vscode/issues/240283
 for extension in "${extensions[@]}"; do
