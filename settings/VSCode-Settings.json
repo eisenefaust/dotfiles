@@ -34,5 +34,6 @@
   "notebook.output.scrolling": true,
   "notebook.lineNumbers": "on",
   "notebook.scrolling.revealNextCellOnExecute": "none",
-  "geminicodeassist.project": "tools-scientific-computing"
+  "geminicodeassist.project": "tools-scientific-computing",
+  "geminicodeassist.displayInlineContextHint": false
 }

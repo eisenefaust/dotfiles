@@ -122,6 +122,23 @@ for app in "${apps[@]}"; do
 done
 
 conda init "$(basename "${SHELL}")"
+mamba shell init --shell "$(basename "${SHELL}")" --root-prefix "$(conda info --base)"
+
+conda config --set changeps1 false
+conda config --set auto_activate_base false
+
+# refer to cert bundle repo for installing extensions
+REPO=ssh://git@ea-bitbucket-prod.childrens.sea.kids:7999/ec/bundles.git
+REPO_DIR=/Users/$USER/bundles
+if [ ! -d $REPO_DIR ]; then
+    git clone $REPO $REPO_DIR
+else
+    cd $REPO_DIR
+    git pull
+    cd -
+fi
+
+conda config --set ssl_verify /Users/$USER/bundles/SCHCABundleAll.crt
 
 # Update and clean up again for safe measure
 brew update
