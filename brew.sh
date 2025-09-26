@@ -40,6 +40,8 @@ packages=(
     "tmux"
     "pixi"
     "bat"
+    "bat-extras"
+    "rsync"
 )
 
 # Loop over the array to install each application.
