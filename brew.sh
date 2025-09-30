@@ -111,6 +111,7 @@ apps=(
     "visual-studio-code"
     "rectangle"
     "miniforge"
+    "gcloud-cli"
 )
 
 # Loop over the array to install each application.
