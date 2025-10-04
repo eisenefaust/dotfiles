@@ -40,6 +40,8 @@ packages=(
     "tmux"
     "pixi"
     "bat"
+    "bat-extras"
+    "rsync"
 )
 
 # Loop over the array to install each application.
@@ -109,6 +111,7 @@ apps=(
     "visual-studio-code"
     "rectangle"
     "miniforge"
+    "gcloud-cli"
 )
 
 # Loop over the array to install each application.

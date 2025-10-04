@@ -54,7 +54,7 @@ prompt_condaenv() {
 
 # pixi uses same environment catch as conda but sets different config value:
 #  may show up twice if set with conda, will need to test on a system without conda, but can't be bothered right now
-#   pixi config set shell.change-ps1
+# pixi config set --global shell.change-ps1 false
 # PIXI_PROJECT_NAME
 # PIXI_PROMPT
 
