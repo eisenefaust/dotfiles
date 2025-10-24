@@ -14,11 +14,13 @@ extensions=(
     mechatroner.rainbow-csv
     ms-python.mypy-type-checker
     ms-python.python
+    ms-python.vscode-pylance
     ms-toolsai.jupyter
     tamasfe.even-better-toml
     tomoki1207.pdf
     the0807.uv-toolkit
     jjjermiah.pixi-vscode
+    gruntfuggly.todo-tree
     nf-core.nf-core-extensionpack
     google.geminicodeassist
 )
