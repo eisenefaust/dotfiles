@@ -1,19 +1,13 @@
 {
     "editor.renderWhitespace": "all",
-    "chat.mcp.discovery.enabled": {
-      "claude-desktop": true,
-      "windsurf": true,
-      "cursor-global": true,
-      "cursor-workspace": true
-    },
     "workbench.secondarySideBar.defaultVisibility": "hidden",
     "nextflow.telemetry.enabled": false,
     "git.autofetch": true,
     "git.confirmSync": false,
     "diffEditor.experimental.showMoves": true,
     "diffEditor.renderSideBySide": false,
-    "diffEditor.ignoreTrimWhitespace": true,
-    "editor.multiCursorModifier": "ctrlCmd",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.codeLens": true,
 
     // Python settings
     "[python]": {
@@ -36,18 +30,23 @@
   "notebook.scrolling.revealNextCellOnExecute": "none",
   "geminicodeassist.project": "tools-scientific-computing",
   "geminicodeassist.displayInlineContextHint": false,
-  "[dockercompose]": {
-    "editor.insertSpaces": true,
-    "editor.tabSize": 2,
-    "editor.autoIndent": "advanced",
-    "editor.quickSuggestions": {
-      "other": true,
-      "comments": false,
-      "strings": true
-    },
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "[github-actions-workflow]": {
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  }
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": [],
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.inlayHints.callArgumentNames": "all",
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.pytestParameters": true,
+  "python.analysis.inlayHints.variableTypes": true,
+  "python.languageServer": "Pylance",
+  "python.analysis.languageServerMode": "full",
+  "python.analysis.typeCheckingMode": "standard",
+  "python.analysis.typeEvaluation.strictDictionaryInference": true,
+  "python.analysis.typeEvaluation.strictListInference": true,
+  "python.analysis.typeEvaluation.strictSetInference": true,
+  "python.terminal.useEnvFile": true,
+  "ruff.lint.preview": true,
+  "python.analysis.autoFormatStrings": true,
+  "python.analysis.completeFunctionParens": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.diagnosticsSource": "Pyright"
 }
