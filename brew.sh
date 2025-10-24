@@ -109,8 +109,10 @@ apps=(
     "firefox"
     "brave-browser"
     "visual-studio-code"
+    "ghostty"
     "rectangle"
     "miniforge"
+    "zoom"
     "gcloud-cli"
 )
 
