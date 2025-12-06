@@ -52,6 +52,8 @@ host_template() {
     echo "    SetEnv TERM=xterm-256color"
     echo "    User ${user}"
     echo "    Port 22"
+    echo "    ForwardX11 yes"
+    echo "    ForwardX11Trusted yes"
     echo "    PreferredAuthentications publickey"
     echo "    IdentityFile ${id_file}"
     echo ""
