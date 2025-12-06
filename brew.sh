@@ -114,6 +114,7 @@ apps=(
     "miniforge"
     "zoom"
     "gcloud-cli"
+    "xquartz"
 )
 
 # Loop over the array to install each application.
