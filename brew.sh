@@ -42,6 +42,7 @@ packages=(
     "bat"
     "bat-extras"
     "rsync"
+    "shellcheck"
 )
 
 # Loop over the array to install each application.
