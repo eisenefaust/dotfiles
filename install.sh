@@ -34,6 +34,31 @@ done
 echo "stow: shell"
 stow -t ~ "shell"
 
+# Finder: show all filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# show hidden files in Finder
+defaults write com.apple.finder AppleShowAllFiles -boolean true
+
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+
+# Display full POSIX path as Finder window title
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+#restart Finder to have changes take effect
+killall Finder
+
 config_dirs=(tmux)
 # use stow to create symlinks for .config dirs (will overwrite old .config dirs)
 for config_dir in "${config_dirs[@]}"; do

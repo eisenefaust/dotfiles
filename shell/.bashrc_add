@@ -8,11 +8,15 @@ unset file
 # history setup 
 # from: https://askubuntu.com/a/667787
 # and: https://unix.stackexchange.com/a/18443
+# and: https://datawookie.dev/blog/2023/04/configuring-bash-history/
 # export HISTFILE=$HOME/.bash_history
-HISTSIZE=5000 # max commands that are saved
-HISTFILESIZE=5000 # max lines of history file
-HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=5000 # max commands that are saved in memory
+export HISTFILESIZE=5000 # max lines of history file
+export HISTTIMEFORMAT='%F %T - '
+export HISTCONTROL=ignoredups:erasedups
+export HISTIGNORE="clear:history:[bf]g:exit:date:* --help"
 shopt -s histappend
-PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+# ${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}
+export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 eval "$(pixi completion --shell bash)"
