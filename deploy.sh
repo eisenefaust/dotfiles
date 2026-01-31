@@ -59,6 +59,35 @@ host_template() {
     echo ""
 }
 
+jump_template() {
+    local host=$1
+    local host_short=$2
+    local user=$3
+    local jump_host=$4
+    local jump_id_file=$5
+
+    # echo "host_short=${host_short}"
+    if [[ ${user} == *"svc"*"auto" ]]; then
+        host_short="svc-${host_short}"
+    elif [[ ${user} == *"svc"*"log" ]]; then
+        host_short="svcl-${host_short}"
+    elif [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${user:0:3} " ]]; then
+        host_short="de-${host_short}"
+    fi
+
+    echo "Host ${host_short}"
+    echo "    HostName ${host}"
+    echo "    ProxyJump ${jump_host}"
+    echo "    SetEnv TERM=xterm-256color"
+    echo "    User ${user}"
+    echo "    Port 22"
+    echo "    ForwardX11 yes"
+    echo "    ForwardX11Trusted yes"
+    echo "    PreferredAuthentications publickey"
+    echo "    IdentityFile ${jump_id_file}"
+    echo ""
+}
+
 generate_clean_command() {
     # generates a string that may be eval'd to clean up old files such as:
     #   authorized keys from $HOME/.ssh/authorized_keys
@@ -238,20 +267,91 @@ remote_hosts_setup() {
     echo "when next logged in to remote host, edit ~/.bashrc with \"source .bashrc_add\" or similar with zshell"
 }
 
+jump_hosts_setup() {
+    local user=$1
+    local passfile=$2
+    temp_config_file=$3
+    local jump_host_name=$4
+    shift 4 # remove parsed parameters from $@
+    local hosts=("$@")
+    echo "hosts=${hosts[*]}"
+
+    echo "user=$user"
+    echo "passfile=$passfile"
+    echo "temp_config_file=$temp_config_file"
+    echo "jump_host_name=$jump_host_name"
+    echo "hosts=${hosts[*]}"
+
+    user_prefix=""
+    key_comment=""
+    if [[ " ${ELEVATED_USER_PREFIX[@]} " =~ " ${user:0:3} " ]]; then
+        # use elevated user prefix as prefix for the ssh key
+        user_prefix="${user:0:3}"
+        key_comment="${user}@"
+    elif [[ "${user}" != ${PRIMARY_USER} ]]; then
+        # use entire svc account name as prefix for the ssh key
+        user_prefix="${user}-"
+        key_comment="${user}@"
+    fi
+    key_comment="${key_comment}${USER}@$(hostname)"
+
+    for idx in ${!HOST_LIST[@]}; do
+        # echo "idx=${idx}"
+        local jump_host=${HOST_LIST[${idx}]}
+        local jump_host_short=${HOST_SHORT_LIST[${idx}]}
+        echo "jump_host=${jump_host}"
+        echo "jump_host_short=${jump_host_short}"
+        if [[ "${jump_host_short}" != "${jump_host_name}" ]]; then
+            continue
+        fi
+        local id_file="${HOME}/.ssh/${user_prefix}${jump_host}_ed25519"
+
+        # If need to generate a new key
+        if [ ! -f "${id_file}" ]; then
+            # generate a new key for user@jump_host
+            echo "generating new key"
+            ssh-keygen -q -N "" -C ${key_comment}@${jump_host} -f ${id_file} -t ed25519
+        fi
+
+        # Check if the jump_host is already in known_hosts
+        ssh-keygen -F "${jump_host}"
+        if [ $? -ne 0 ]; then
+            # if ssh-keygen returns non-zero exit code, host needs to be added.
+            # Retrieve the host's public key and append it
+            # -H obfuscates hosts by converting them all to hashes
+            echo "adding host to known_hosts ${jump_host}"
+            ssh-keyscan -t ed25519 "${jump_host}" >> "$KNOWN_HOSTS"
+        fi
+        # uses sshpass to copy over id_file to host
+        sshpass -f ${passfile} ssh-copy-id -i ${id_file} ${user}@${jump_host}
+        # verify ssh-key was registred properly
+        ssh -i ${id_file} ${user}@${jump_host} "echo verified"
+
+        for idy in ${!hosts[@]}; do
+            local host=${hosts[${idy}]}
+            # build up ~/.ssh/config for the user per host
+            jump_template ${host} ${host} ${user} ${jump_host_short} ${id_file} >> $temp_config_file
+        done
+    done
+
+    echo "hosts added with jump host added to config"
+}
+
 read_hosts
 temp_config_file=$(mktemp)
 
-remote_hosts_setup "${USER}" "${PASS}" $temp_config_file
-remote_hosts_setup "de-${USER}" "${PASS2}" $temp_config_file "skip_hpc"
-remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" $temp_config_file
-remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" $temp_config_file
+remote_hosts_setup "${USER}" "${PASS}" "$temp_config_file"
+jump_hosts_setup "${USER}" "${PASS}" "$temp_config_file" "sasquatch" gpu-{1..7}
+remote_hosts_setup "de-${USER}" "${PASS2}" "$temp_config_file" "skip_hpc"
+remote_hosts_setup "svc_rsc_hpc_auto" "${PASS3}" "$temp_config_file"
+remote_hosts_setup "svc_rsc_hpc_log" "${PASS4}" "$temp_config_file"
 
 echo "deploying ssh key config with shortnames"
-ssh_config=${HOME}/.ssh/config
-if [ -f ${ssh_config} ]; then
-    cp ${ssh_config} ${ssh_config}.bak
+ssh_config="${HOME}/.ssh/config"
+if [ -f "${ssh_config}" ]; then
+    cp "${ssh_config}" "${ssh_config}.bak"
 fi
-cat $temp_config_file > ${ssh_config} && rm $temp_config_file
+cat "$temp_config_file" > "${ssh_config}" && rm "$temp_config_file"
 
 # cat ${ssh_config}
 
