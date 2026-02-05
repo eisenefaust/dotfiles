@@ -14,9 +14,12 @@ export HISTSIZE=5000 # max commands that are saved in memory
 export HISTFILESIZE=5000 # max lines of history file
 export HISTTIMEFORMAT='%F %T - '
 export HISTCONTROL=ignoredups:erasedups
-export HISTIGNORE="clear:history:[bf]g:exit:date:* --help"
+export HISTIGNORE="clear:history:[bf]g:exit:date"
 shopt -s histappend
 # ${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}
-export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+# Append to the history file and reread it
+# history -a: appends the new history lines (from this session) to the history file.
+# history -n: reads the new history lines (from other sessions) from the history file.
+export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 eval "$(pixi completion --shell bash)"
