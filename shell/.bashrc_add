@@ -21,7 +21,8 @@ shopt -s histappend
 # 1. `history -a`: Append this session's history to the file.
 # 2. `history -n`: Read history from other sessions into this session's memory.
 # 3. `awk ...`: De-duplicate the history file in place.
+#       awk -i inplace '!seen[\$0]++' \"\$HISTFILE\"
 # 4. `history -c; history -r`: Clear and re-read the de-duplicated history into memory.
-export PROMPT_COMMAND="history -a; history -n; awk -i inplace '!seen[\$0]++' \"\$HISTFILE\"; history -c; history -r; $PROMPT_COMMAND"
+export PROMPT_COMMAND="history -a; history -n; history -c; history -r${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
 
 eval "$(pixi completion --shell bash)"
