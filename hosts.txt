@@ -9,5 +9,6 @@ rplbam01.childrens.sea.kids rplbam01
 pplvsq01.childrens.sea.kids pplvsq01
 pplvdb01.childrens.sea.kids pplvdb01
 rplasc01.childrens.sea.kids rplasc01
+pplver01.childrens.sea.kids pplver01
 rplitl01.childrens.sea.kids rplitl01
 #.childrens.sea.kids
