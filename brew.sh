@@ -34,6 +34,7 @@ packages=(
     "uv"
     "bash"
     "zsh"
+    "gh"
     "git"
     "tree"
     "sshpass"

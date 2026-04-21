@@ -10,5 +10,4 @@ pplvsq01.childrens.sea.kids pplvsq01
 pplvdb01.childrens.sea.kids pplvdb01
 rplasc01.childrens.sea.kids rplasc01
 pplver01.childrens.sea.kids scooter
-rplitl01.childrens.sea.kids rplitl01
 #.childrens.sea.kids
