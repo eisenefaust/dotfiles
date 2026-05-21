@@ -44,6 +44,7 @@ packages=(
     "bat-extras"
     "rsync"
     "shellcheck"
+    "gemini-cli"
 )
 
 # Loop over the array to install each application.
@@ -117,6 +118,7 @@ apps=(
     "zoom"
     "gcloud-cli"
     "xquartz"
+    "antigravity"
 )
 
 # Loop over the array to install each application.
@@ -147,6 +149,7 @@ else
 fi
 
 conda config --set ssl_verify /Users/$USER/bundles/SCHCABundleAll.crt
+conda config --add default_channels https://sonatype.childrens.sea.kids/repository/conda-forge-proxy
 
 # Update and clean up again for safe measure
 brew update
