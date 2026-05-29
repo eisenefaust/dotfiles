@@ -118,7 +118,6 @@ apps=(
     "zoom"
     "gcloud-cli"
     "xquartz"
-    "antigravity"
 )
 
 # Loop over the array to install each application.

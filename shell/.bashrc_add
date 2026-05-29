@@ -25,6 +25,6 @@ shopt -s histappend
 # 4. `history -c; history -r`: Clear and re-read the de-duplicated history into memory.
 export PROMPT_COMMAND="history -a; history -n; history -c; history -r${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
 
-export GOOGLE_CLOUD_PROJECT="tools-scientific-computing"
+export GOOGLE_CLOUD_PROJECT="lab-scientific-computing"
 
 eval "$(pixi completion --shell bash)"

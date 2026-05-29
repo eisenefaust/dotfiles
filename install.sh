@@ -59,7 +59,7 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 #restart Finder to have changes take effect
 killall Finder
 
-config_dirs=(tmux)
+config_dirs=(tmux ghostty)
 # use stow to create symlinks for .config dirs (will overwrite old .config dirs)
 for config_dir in "${config_dirs[@]}"; do
     if [ -d ${HOME}/.config/$config_dir ] && [ ! -L ${HOME}/.config/$config_dir ]; then
