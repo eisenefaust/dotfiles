@@ -22,6 +22,7 @@ setopt HIST_IGNORE_DUPS # Don't record an entry that was just recorded again.
 setopt HIST_VERIFY # Don't execute immediately upon history expansion.
 
 export GOOGLE_CLOUD_PROJECT="tools-scientific-computing"
+export GOOGLE_CLOUD_LOCATION="us-west1"
 
 # add autocomplete for pixi commands
 autoload -Uz compinit
