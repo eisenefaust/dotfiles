@@ -13,10 +13,19 @@ unset file
 export HISTSIZE=5000 # max commands that are saved in memory
 export HISTFILESIZE=5000 # max lines of history file
 export HISTTIMEFORMAT='%F %T - '
-export HISTCONTROL=ignoredups:erasedups
-export HISTIGNORE="clear:history:[bf]g:exit:date:* --help"
+export HISTCONTROL=ignoredups:erasedups # ignore consecutive duplicates and erase older duplicates
+export HISTIGNORE="clear:history:[bf]g:exit:date" # commands to ignore
 shopt -s histappend
-# ${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}
-export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+
+# Sync history across sessions and remove duplicates.
+# 1. `history -a`: Append this session's history to the file.
+# 2. `history -n`: Read history from other sessions into this session's memory.
+# 3. `awk ...`: De-duplicate the history file in place.
+#       awk -i inplace '!seen[\$0]++' \"\$HISTFILE\"
+# 4. `history -c; history -r`: Clear and re-read the de-duplicated history into memory.
+export PROMPT_COMMAND="history -a; history -n; history -c; history -r${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
+
+export GOOGLE_CLOUD_PROJECT="lab-scientific-computing"
+export GOOGLE_CLOUD_LOCATION="us-west1"
 
 eval "$(pixi completion --shell bash)"

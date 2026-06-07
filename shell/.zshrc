@@ -1,7 +1,7 @@
 
 source "${HOME}/.zshrc_add"
 
-sshpass -f ${HOME}/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@helens.childrens.sea.kids/active ${HOME}/active
+# sshpass -f ${HOME}/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@helens.childrens.sea.kids/active ${HOME}/active
 # sshpass -f ${HOME}/.ssh/sch-passwd /sbin/mount_smbfs //gmorto@baker.childrens.sea.kids/archive ${HOME}/archive
 
 # >>> conda initialize >>>
@@ -22,7 +22,7 @@ unset __conda_setup
 
 # >>> mamba initialize >>>
 # !! Contents within this block are managed by 'mamba shell init' !!
-export MAMBA_EXE='/opt/homebrew/Caskroom/miniforge/base/condabin/mamba';
+export MAMBA_EXE='/opt/homebrew/bin/mamba';
 export MAMBA_ROOT_PREFIX='/opt/homebrew/Caskroom/miniforge/base';
 __mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
 if [ $? -eq 0 ]; then

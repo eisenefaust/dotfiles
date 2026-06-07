@@ -264,7 +264,7 @@ remote_hosts_setup() {
     done
 
     echo "To finish the deployment of the terminal preferences,"
-    echo "when next logged in to remote host, edit ~/.bashrc with \"source .bashrc_add\" or similar with zshell"
+    echo "when next logged in to remote host, edit ~/.bashrc with \"source \$HOME/.bashrc_add\" or similar with zshell"
 }
 
 jump_hosts_setup() {

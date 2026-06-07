@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.colorTheme": "Dark Modern",
   "editor.renderWhitespace": "all",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "git.autofetch": true,
@@ -55,4 +55,6 @@
   "python.defaultInterpreterPath": "/opt/homebrew/bin/python3",
   "geminicodeassist.inlineSuggestions.enableAuto": false,
 "terminal.integrated.suggest.enabled": false,
+"http.systemCertificatesNode": true,
+"security.workspace.trust.untrustedFiles": "open"
 }

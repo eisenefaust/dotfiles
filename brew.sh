@@ -34,6 +34,7 @@ packages=(
     "uv"
     "bash"
     "zsh"
+    "gh"
     "git"
     "tree"
     "sshpass"
@@ -43,6 +44,7 @@ packages=(
     "bat-extras"
     "rsync"
     "shellcheck"
+    "gemini-cli"
 )
 
 # Loop over the array to install each application.
@@ -132,7 +134,7 @@ conda init "$(basename "${SHELL}")"
 mamba shell init --shell "$(basename "${SHELL}")" --root-prefix "$(conda info --base)"
 
 conda config --set changeps1 false
-conda config --set auto_activate_base false
+conda config --set auto_activate false
 
 # refer to cert bundle repo for installing extensions
 REPO=ssh://git@ea-bitbucket-prod.childrens.sea.kids:7999/ec/bundles.git
@@ -146,6 +148,10 @@ else
 fi
 
 conda config --set ssl_verify /Users/$USER/bundles/SCHCABundleAll.crt
+conda config --system --add default_channels conda-forge
+conda config --system --set channel_alias https://sonatype.childrens.sea.kids/repository/
+sed 's|https://conda.anaconda.org/conda-forge|https://sonatype.childrens.sea.kids/repository/conda-forge|g' ~/.condarc > ~/.condarc.tmp && mv ~/.condarc.tmp ~/.condarc
+sed 's|https://conda.anaconda.org/conda-forge|https://sonatype.childrens.sea.kids/repository/conda-forge|g' "$(conda info --base)/.condarc" > ~/.condarc.tmp && mv ~/.condarc.tmp "$(conda info --base)/.condarc"
 
 # Update and clean up again for safe measure
 brew update
