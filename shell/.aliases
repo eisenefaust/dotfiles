@@ -39,7 +39,7 @@ alias tmux="tmux -f $TMUX_CONF"
 
 # add host specific aliases
 SASQUATCH_HOSTDOMAINS=("cm.cluster")
-LOCAL_HOSTDOMAINS=("MLSLE16948")
+LOCAL_HOSTDOMAINS=("MLSLE16948" "MLSLE26183")
 HOSTNAME_DOMAIN=$(hostname -d)
 if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias sa='sacct --format "JobID,User,start,end,State,ExitCode,JobName%40,Comment,account%20,partition%20,AllocNodes,NodeList,Elapsed,TotalCPU,CPUTime%12,CPUTimeRaw,ReqTRES%177,TRESUsageInTot%205"'
@@ -51,7 +51,7 @@ if [[ " ${SASQUATCH_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
     alias bp='cd /data/hps/assoc/public/bioinformatics/container/posit/'
     alias pc='cd /data/hps/assoc/private/posit_workbench/container'
 elif [[ " ${LOCAL_HOSTDOMAINS[@]} " =~ " ${HOSTNAME_DOMAIN} " ]]; then
-    alias foxyproxy_tunnel='ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
+    alias foxyproxy_tunnel='sshpass -f $HOME/.ssh/sch-passwd ssh -D 10000 $USER@login-1.hpc.childrens.sea.kids'
 fi
 unset SASQUATCH_HOSTDOMAINS
 unset LOCAL_HOSTDOMAINS
