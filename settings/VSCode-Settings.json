@@ -32,7 +32,6 @@
   "notebook.scrolling.revealNextCellOnExecute": "none",
   "geminicodeassist.project": "tools-scientific-computing",
   "geminicodeassist.displayInlineContextHint": false,
-  "python-envs.defaultEnvManager": "ms-python.python:system",
   "python-envs.pythonProjects": [],
   "python.analysis.autoImportCompletions": true,
   "python.analysis.inlayHints.callArgumentNames": "all",
