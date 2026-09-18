@@ -32,3 +32,9 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
+
+export GOOGLE_CLOUD_PROJECT=tools-scientific-computing
+export GOOGLE_CLOUD_LOCATION=us-west1
+
+export OPENCODE_ENABLE_PARALLEL=1
+export UV_SYSTEM_CERTS=true

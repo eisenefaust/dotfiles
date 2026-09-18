@@ -45,6 +45,9 @@ packages=(
     "rsync"
     "shellcheck"
     "gemini-cli"
+    "anomalyco/tap/opencode"
+    "cmake"
+    "llama.cpp"
 )
 
 # Loop over the array to install each application.
