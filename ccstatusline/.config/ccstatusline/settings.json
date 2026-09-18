@@ -1,0 +1,98 @@
+{
+  "version": 4,
+  "lines": [
+    [
+      {
+        "id": "1",
+        "type": "model",
+        "color": "brightCyan"
+      },
+      {
+        "id": "df516f71-3564-4d2d-afa0-109bf9ad5e7f",
+        "type": "separator"
+      },
+      {
+        "id": "3f2835f5-8bbf-4679-8439-c5061b3a8b18",
+        "type": "thinking-effort",
+        "color": "cyan"
+      },
+      {
+        "id": "2",
+        "type": "separator"
+      },
+      {
+        "id": "221d0466-ca51-481e-87a0-968287fb5508",
+        "type": "context-bar",
+        "color": "brightBlue"
+      },
+      {
+        "id": "4",
+        "type": "separator"
+      },
+      {
+        "id": "5",
+        "type": "input-speed",
+        "color": "brightGreen"
+      },
+      {
+        "id": "6",
+        "type": "separator"
+      },
+      {
+        "id": "7",
+        "type": "output-speed",
+        "color": "brightYellow"
+      }
+    ],
+    [
+      {
+        "id": "e28c25f9-9901-4973-8242-fe998cb1ce60",
+        "type": "current-working-dir",
+        "color": "brightYellow"
+      },
+      {
+        "id": "eb66b1a1-51d1-4022-a442-e7a9cb8fd68c",
+        "type": "separator"
+      },
+      {
+        "id": "96575f29-a0ef-4536-8cf1-6e8522e03a95",
+        "type": "git-branch",
+        "color": "brightBlue"
+      },
+      {
+        "id": "012299dd-9fc0-4529-bf93-b77e8574b97b",
+        "type": "git-status",
+        "color": "brightBlue"
+      },
+      {
+        "id": "99e51337-0f40-402b-9027-92c8dad038c1",
+        "type": "separator"
+      }
+    ],
+    []
+  ],
+  "flexMode": "full",
+  "compactThreshold": 60,
+  "colorLevel": 2,
+  "defaultPaddingSide": "both",
+  "inheritSeparatorColors": false,
+  "globalBold": false,
+  "gitCacheTtlSeconds": 5,
+  "terminalWidthCacheTtlSeconds": 5,
+  "customCommandCacheTtlSeconds": 0,
+  "minimalistMode": false,
+  "powerline": {
+    "enabled": false,
+    "separators": [
+      ""
+    ],
+    "separatorInvertBackground": [
+      false
+    ],
+    "startCaps": [],
+    "endCaps": [],
+    "autoAlign": false,
+    "continueThemeAcrossLines": false
+  },
+  "exportedBy": "2.2.30"
+}
