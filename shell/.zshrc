@@ -33,8 +33,12 @@ fi
 unset __mamba_setup
 # <<< mamba initialize <<<
 
-export GOOGLE_CLOUD_PROJECT=tools-scientific-computing
-export GOOGLE_CLOUD_LOCATION=us-west1
-
 export OPENCODE_ENABLE_PARALLEL=1
 export UV_SYSTEM_CERTS=true
+export NODE_EXTRA_CA_CERTS="${HOME}/.omp/certs/zscaler.pem"
+export SSL_CERT_FILE="${HOME}/.omp/certs/ca-bundle.crt"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/gmorto/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions

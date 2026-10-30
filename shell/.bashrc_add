@@ -26,3 +26,6 @@ shopt -s histappend
 export PROMPT_COMMAND="history -a; history -n; history -c; history -r${PROMPT_COMMAND:+; ${PROMPT_COMMAND}}"
 
 eval "$(pixi completion --shell bash)"
+
+export GOOGLE_CLOUD_PROJECT=tools-scientific-computing
+export GOOGLE_CLOUD_LOCATION=us-west1

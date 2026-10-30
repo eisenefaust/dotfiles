@@ -25,3 +25,6 @@ setopt HIST_VERIFY # Don't execute immediately upon history expansion.
 autoload -Uz compinit
 compinit
 eval "$(pixi completion --shell zsh)"
+
+export GOOGLE_CLOUD_PROJECT=tools-scientific-computing
+export GOOGLE_CLOUD_LOCATION=us-west1
